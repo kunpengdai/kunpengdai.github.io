@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>gonum on 有鸟止南方之阜</title>
+    <link>https://kunpengdai.github.io/categories/gonum/</link>
+    <description>Recent content in gonum on 有鸟止南方之阜</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 24 Aug 2019 22:12:12 +0800</lastBuildDate>
+    <atom:link href="https://kunpengdai.github.io/categories/gonum/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Redis Bitmap</title>
+      <link>https://kunpengdai.github.io/post/2019/redis-bitmap/</link>
+      <pubDate>Sat, 24 Aug 2019 22:12:12 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/redis-bitmap/</guid>
+      <description>redis bitmap简介 redis中的bitmap是一串连续的2进制数字，每一位所在的位置为偏移，在bitmap上可以执行AND，OR，XOR，NOT等位操作。 bitmap中保存每个位置的数据仅使用了一个bit，而对应的数据的存储根据大小在bitmap中相对应offset。 一个简单的例</description>
+    </item>
+  </channel>
+</rss>

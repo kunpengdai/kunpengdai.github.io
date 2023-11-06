@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>合成复用原则 on 有鸟止南方之阜</title>
+    <link>https://kunpengdai.github.io/tags/%E5%90%88%E6%88%90%E5%A4%8D%E7%94%A8%E5%8E%9F%E5%88%99/</link>
+    <description>Recent content in 合成复用原则 on 有鸟止南方之阜</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 28 Jun 2018 08:41:18 +0800</lastBuildDate>
+    <atom:link href="https://kunpengdai.github.io/tags/%E5%90%88%E6%88%90%E5%A4%8D%E7%94%A8%E5%8E%9F%E5%88%99/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>合成复用原则</title>
+      <link>https://kunpengdai.github.io/post/2019/%E5%90%88%E6%88%90%E5%A4%8D%E7%94%A8%E5%8E%9F%E5%88%99/</link>
+      <pubDate>Thu, 28 Jun 2018 08:41:18 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/%E5%90%88%E6%88%90%E5%A4%8D%E7%94%A8%E5%8E%9F%E5%88%99/</guid>
+      <description>定义 合成复用原则（Composite Reuse Principle，CRP）又叫组合/聚合复用原则（Composition/Aggregate Reuse Principle，CARP）：它要求在软件复用时，要尽量先使用组合或者聚合等关联关系来实现，其次才考虑使用继承关系来实现。 如果要使用继承关心，必</description>
+    </item>
+  </channel>
+</rss>

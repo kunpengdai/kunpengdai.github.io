@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>Redis Bitmap | 有鸟止南方之阜</title>
+    <meta property="og:title" content="Redis Bitmap - 有鸟止南方之阜">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2019-08-24T22:12:12&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-08-24T22:12:12&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="Redis Bitmap">
+        
+    <meta name="author" content="kunpeng">
+    <meta property="og:url" content="https://kunpengdai.github.io/post/2019/redis-bitmap/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://kunpengdai.github.io">
+                        有鸟止南方之阜
+                    </a>
+                
+                <p class="description">专注于 Go语言、后端、分布式</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://kunpengdai.github.io">Home</a>
+                    
+                    <a  href="https://kunpengdai.github.io/post/" title="博客">博客</a>
+                    
+                    <a  href="https://kunpengdai.github.io/tags/" title="标签">标签</a>
+                    
+                    <a  href="https://kunpengdai.github.io/categories/" title="分类">分类</a>
+                    
+                    <a  href="https://kunpengdai.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">Table of Contents</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#redis-bitmap简介">redis bitmap简介</a></li>
+    <li><a href="#bitmap-vs-hash">bitmap vs hash</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+
+        if ($("#TableOfContents").children().length < 1) {
+            $(".post-toc").remove();
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">Redis Bitmap</h1>
+        </header>
+        
+  <time datetime="2019-08-24T14:12:12Z" class="post-meta meta-date dt-published">
+    2019-08-24
+  </time>
+
+
+<div class="post-meta meta-category">
+  <span>&nbsp;|</span>
+  
+    <a href='/categories/go' target="_blank">go</a>
+  
+    <a href='/categories/redis' target="_blank">redis</a>
+  
+    <a href='/categories/gonum' target="_blank">gonum</a>
+  
+</div>
+
+
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">&nbsp;|
+                <span id="busuanzi_value_page_pv"></span> <span>reads</span>
+            </span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h2 id="redis-bitmap简介">redis bitmap简介</h2>
+<p>redis中的bitmap是一串连续的2进制数字，每一位所在的位置为偏移，在bitmap上可以执行AND，OR，XOR，NOT等位操作。</p>
+<p>bitmap中保存每个位置的数据仅使用了一个bit，而对应的数据的存储根据大小在bitmap中相对应offset。</p>
+<p>一个简单的例子：日活跃用户</p>
+<p>​    为了统计今日登录的用户数，我们建立了一个bitmap,每一位标识一个用户ID。当某个用户访问我们的网页或执行了某个操作，就在bitmap中把标识此用户的位置为1。在Redis中获取此bitmap的key值是通过用户执行操作的类型和时间戳获得的。之后可以通过各天的bitmap进行位操作来统计相应的数据。</p>
+<p>在这里，bitmap在大数据量的情况下，占用大小较为稳定，增长不会随着存储数据量线性增长。也不会只存储一个 2^32-1数字就占满 512G（存在着内存压缩）。</p>
+<h2 id="bitmap-vs-hash">bitmap vs hash</h2>
+<p>在数据量没有那么大的情况下，使用bitmap可能比使用hashmap还要占用空间。因此，做了如下的实验来验证各个数据存储量的情况下，bitmap与hash占用的空间大小。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">testBit</span>(c redis.Conn, times <span style="color:#458;font-weight:bold">int</span>) <span style="color:#458;font-weight:bold">int</span> {	<span style="color:#998;font-style:italic">//times为测试存储量
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	<span style="color:#000;font-weight:bold">for</span> i <span style="color:#000;font-weight:bold">:=</span> <span style="color:#099">0</span>; i &lt; times; i = i <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1000</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">for</span> j <span style="color:#000;font-weight:bold">:=</span> <span style="color:#099">0</span>; j &lt; <span style="color:#099">1000</span>; j<span style="color:#000;font-weight:bold">++</span> {		<span style="color:#998;font-style:italic">//redis pipeline
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>			c.<span style="color:#900;font-weight:bold">Send</span>(<span style="color:#d14">&#34;setbit&#34;</span>, <span style="color:#d14">&#34;bitset&#34;</span>, rand.<span style="color:#900;font-weight:bold">Intn</span>(maxUsers), <span style="color:#099">1</span>)	<span style="color:#998;font-style:italic">//使数据尽量分散，减小压缩带来的占用降低
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>		}
+</span></span><span style="display:flex;"><span>		c.<span style="color:#900;font-weight:bold">Flush</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	res, _ <span style="color:#000;font-weight:bold">:=</span> redis.<span style="color:#900;font-weight:bold">String</span>(c.<span style="color:#900;font-weight:bold">Do</span>(<span style="color:#d14">&#34;debug&#34;</span>, <span style="color:#d14">&#34;object&#34;</span>, <span style="color:#d14">&#34;bitset&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">return</span> <span style="color:#900;font-weight:bold">getLength</span>(res)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">testHash</span>(c redis.Conn, times <span style="color:#458;font-weight:bold">int</span>) <span style="color:#458;font-weight:bold">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">for</span> i <span style="color:#000;font-weight:bold">:=</span> <span style="color:#099">0</span>; i &lt; times; i <span style="color:#000;font-weight:bold">+=</span> <span style="color:#099">1000</span> {
+</span></span><span style="display:flex;"><span>		args <span style="color:#000;font-weight:bold">:=</span> <span style="color:#0086b3">make</span>([]<span style="color:#000;font-weight:bold">interface</span>{}, <span style="color:#099">0</span>)
+</span></span><span style="display:flex;"><span>		args = <span style="color:#0086b3">append</span>(args, <span style="color:#d14">&#34;hash&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">for</span> j <span style="color:#000;font-weight:bold">:=</span> <span style="color:#099">0</span>; j &lt; <span style="color:#099">1000</span>; j<span style="color:#000;font-weight:bold">++</span> {	<span style="color:#998;font-style:italic">//redis mset
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>			args = <span style="color:#0086b3">append</span>(args, i<span style="color:#000;font-weight:bold">+</span>j<span style="color:#000;font-weight:bold">+</span>times)
+</span></span><span style="display:flex;"><span>			args = <span style="color:#0086b3">append</span>(args, <span style="color:#099">1</span>)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		c.<span style="color:#900;font-weight:bold">Do</span>(<span style="color:#d14">&#34;HSET&#34;</span>, args<span style="color:#000;font-weight:bold">...</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	res, _ <span style="color:#000;font-weight:bold">:=</span> redis.<span style="color:#900;font-weight:bold">String</span>(c.<span style="color:#900;font-weight:bold">Do</span>(<span style="color:#d14">&#34;debug&#34;</span>, <span style="color:#d14">&#34;object&#34;</span>, <span style="color:#d14">&#34;hash&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">return</span> <span style="color:#900;font-weight:bold">getLength</span>(res)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">getLength</span>(s <span style="color:#458;font-weight:bold">string</span>) <span style="color:#458;font-weight:bold">int</span> {			<span style="color:#998;font-style:italic">//获取debug命令中占用空间量
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	strs <span style="color:#000;font-weight:bold">:=</span> strings.<span style="color:#900;font-weight:bold">Fields</span>(s)
+</span></span><span style="display:flex;"><span>	length <span style="color:#000;font-weight:bold">:=</span> strings.<span style="color:#900;font-weight:bold">Split</span>(strs[<span style="color:#099">4</span>], <span style="color:#d14">&#34;:&#34;</span>)[<span style="color:#099">1</span>]
+</span></span><span style="display:flex;"><span>	l, _ <span style="color:#000;font-weight:bold">:=</span> strconv.<span style="color:#900;font-weight:bold">Atoi</span>(length)
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">return</span> l
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>实际测试代码，测试少量数据情况下【100~100000】及大量数据情况下的【100000，10000000】情况下的实际空间大小，并使用gonum/plot绘制出效果图：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">const</span> maxUsers = <span style="color:#099">200000000</span>		<span style="color:#998;font-style:italic">//假设公司有两亿用户
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+</span></span><span style="display:flex;"><span>	c, err <span style="color:#000;font-weight:bold">:=</span> redis.<span style="color:#900;font-weight:bold">Dial</span>(<span style="color:#d14">&#34;tcp&#34;</span>, <span style="color:#d14">&#34;:6379&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">if</span> err <span style="color:#000;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span>		fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#d14">&#34;err:&#34;</span>, err)
+</span></span><span style="display:flex;"><span>		<span style="color:#000;font-weight:bold">return</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">defer</span> c.<span style="color:#900;font-weight:bold">Close</span>()
+</span></span><span style="display:flex;"><span>	p, _ <span style="color:#000;font-weight:bold">:=</span> plot.<span style="color:#900;font-weight:bold">New</span>()
+</span></span><span style="display:flex;"><span>	p.Title.Text = <span style="color:#d14">&#34;bitmap vs hash&#34;</span>
+</span></span><span style="display:flex;"><span>	p.X.Label.Text = <span style="color:#d14">&#34;key nums&#34;</span>
+</span></span><span style="display:flex;"><span>	p.Y.Label.Text = <span style="color:#d14">&#34;memory used&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	points <span style="color:#000;font-weight:bold">:=</span> plotter.XYs{}
+</span></span><span style="display:flex;"><span>	points1 <span style="color:#000;font-weight:bold">:=</span> plotter.XYs{}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	timess <span style="color:#000;font-weight:bold">:=</span> []<span style="color:#458;font-weight:bold">int</span>{<span style="color:#099">100</span>, <span style="color:#099">1000</span>, <span style="color:#099">2000</span>, <span style="color:#099">5000</span>, <span style="color:#099">10000</span>, <span style="color:#099">30000</span>, <span style="color:#099">45000</span>, <span style="color:#099">60000</span>, <span style="color:#099">100000</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#900;font-weight:bold">afterTest</span>(c)
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">for</span> _, times <span style="color:#000;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">range</span> timess {
+</span></span><span style="display:flex;"><span>		points = <span style="color:#0086b3">append</span>(points, plotter.XY{<span style="color:#0086b3">float64</span>(times), <span style="color:#0086b3">float64</span>(<span style="color:#900;font-weight:bold">testBit</span>(c, times))})
+</span></span><span style="display:flex;"><span>		points1 = <span style="color:#0086b3">append</span>(points1, plotter.XY{<span style="color:#0086b3">float64</span>(times), <span style="color:#0086b3">float64</span>(<span style="color:#900;font-weight:bold">testHash</span>(c, times))})
+</span></span><span style="display:flex;"><span>		<span style="color:#900;font-weight:bold">afterTest</span>(c)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	plotutil.<span style="color:#900;font-weight:bold">AddLinePoints</span>(p, []<span style="color:#000;font-weight:bold">interface</span>{}{points, points1}<span style="color:#000;font-weight:bold">...</span>)
+</span></span><span style="display:flex;"><span>	p.<span style="color:#900;font-weight:bold">Save</span>(<span style="color:#099">4</span><span style="color:#000;font-weight:bold">*</span>vg.Inch, <span style="color:#099">4</span><span style="color:#000;font-weight:bold">*</span>vg.Inch, <span style="color:#d14">&#34;small.png&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	points3 <span style="color:#000;font-weight:bold">:=</span> plotter.XYs{}
+</span></span><span style="display:flex;"><span>	points4 <span style="color:#000;font-weight:bold">:=</span> plotter.XYs{}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	timess = []<span style="color:#458;font-weight:bold">int</span>{<span style="color:#099">100000</span>, <span style="color:#099">300000</span>, <span style="color:#099">1000000</span>, <span style="color:#099">2000000</span>, <span style="color:#099">3000000</span>, <span style="color:#099">10000000</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#900;font-weight:bold">afterTest</span>(c)
+</span></span><span style="display:flex;"><span>	<span style="color:#000;font-weight:bold">for</span> _, times <span style="color:#000;font-weight:bold">:=</span> <span style="color:#000;font-weight:bold">range</span> timess {
+</span></span><span style="display:flex;"><span>		points3 = <span style="color:#0086b3">append</span>(points3, plotter.XY{<span style="color:#0086b3">float64</span>(times), <span style="color:#0086b3">float64</span>(<span style="color:#900;font-weight:bold">testBit</span>(c, times))})
+</span></span><span style="display:flex;"><span>		points4 = <span style="color:#0086b3">append</span>(points4, plotter.XY{<span style="color:#0086b3">float64</span>(times), <span style="color:#0086b3">float64</span>(<span style="color:#900;font-weight:bold">testHash</span>(c, times))})
+</span></span><span style="display:flex;"><span>		<span style="color:#900;font-weight:bold">afterTest</span>(c)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	plotutil.<span style="color:#900;font-weight:bold">AddLinePoints</span>(p, []<span style="color:#000;font-weight:bold">interface</span>{}{points3, points4}<span style="color:#000;font-weight:bold">...</span>)
+</span></span><span style="display:flex;"><span>	p.<span style="color:#900;font-weight:bold">Save</span>(<span style="color:#099">4</span><span style="color:#000;font-weight:bold">*</span>vg.Inch, <span style="color:#099">4</span><span style="color:#000;font-weight:bold">*</span>vg.Inch, <span style="color:#d14">&#34;large.png&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">func</span> <span style="color:#900;font-weight:bold">afterTest</span>(c redis.Conn) {
+</span></span><span style="display:flex;"><span>	c.<span style="color:#900;font-weight:bold">Do</span>(<span style="color:#d14">&#34;del&#34;</span>, <span style="color:#d14">&#34;bitset&#34;</span>)
+</span></span><span style="display:flex;"><span>	c.<span style="color:#900;font-weight:bold">Do</span>(<span style="color:#d14">&#34;del&#34;</span>, <span style="color:#d14">&#34;hash&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>实验结果如下：</p>
+<p>
+        <img class="mx-auto" alt="小规模数据" src="/image/small.png" />   
+    </p>
+<p>在假定两亿用户的情况下，小规模数据测试情况下，可以发现6W左右数据存储的情况下，hash 和 bitmap使用的空间都为400~500KB，而用户小于6W的情况下使用hash稍有优势。而数据规模更大的时候，bitmap的存储优势就发挥了出来。</p>
+<p>
+        <img class="mx-auto" alt="大规模数据" src="/image/large.png" />   
+    </p>
+<p>大规模场景下可以看出hash的空间占用为线性增长，而bitmap在大规模数据存储的情况下空间占用量的增长则稳定的多。</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>Author: </strong><a rel="author" href="https://kunpengdai.github.io">kunpeng</a></li>
+        <li style="word-break:break-all"><strong>Link: </strong><a href="https://kunpengdai.github.io/post/2019/redis-bitmap/">https://kunpengdai.github.io/post/2019/redis-bitmap/</a></li>
+        <li><strong>License: </strong>This work is under a <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>. Kindly fulfill the requirements of the aforementioned License when adapting or creating a derivative of this work.</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2019/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">分布式锁</a></li>
+        
+        <li><a href="/post/2019/go-interface-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/">Go Interface 原理解析</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/redis' target="_blank">redis</a></li>
+                
+                <li><a href='/tags/go' target="_blank">go</a></li>
+                
+                <li><a href='/tags/bitmap' target="_blank">bitmap</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "kunpeng" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2023 <a href="https://kunpengdai.github.io">有鸟止南方之阜 By kunpeng</a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-08P15BM403"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-08P15BM403', { 'anonymize_ip': false });
+}
+</script>
+
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://kunpengdai.github.io/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://kunpengdai.github.io">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">Latest articles</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2023/%E9%A3%9F%E6%9D%90%E5%8D%95%E8%AF%8D/" title="食材单词" target="_blank">食材单词</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2020/%E6%9D%A8%E6%B5%A6%E5%9B%BE%E4%B9%A6%E9%A6%86%E6%97%A5%E6%B5%81%E9%87%8F%E7%88%AC%E8%99%AB/" title="杨浦图书馆日流量爬虫" target="_blank">杨浦图书馆日流量爬虫</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/TCP%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E7%AE%97%E6%B3%95/" title="TCP拥塞控制算法" target="_blank">TCP拥塞控制算法</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/redis-bitmap/" title="Redis Bitmap" target="_blank">Redis Bitmap</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="Redis 数据结构" target="_blank">Redis 数据结构</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" title="分布式锁" target="_blank">分布式锁</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/redis%E6%8C%81%E4%B9%85%E5%8C%96%E4%B8%8E%E5%90%8C%E6%AD%A5/" title="Redis持久化与同步" target="_blank">Redis持久化与同步</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" title="网络编程" target="_blank">网络编程</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/Go%E4%B8%B4%E6%97%B6%E5%AF%B9%E8%B1%A1%E6%B1%A0pool%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/" title="Go临时对象池pool原理解析" target="_blank">Go临时对象池pool原理解析</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/go-interface-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/" title="Go Interface 原理解析" target="_blank">Go Interface 原理解析</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>Categories</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://kunpengdai.github.io/categories/develop/">develop (2)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/go/">go (2)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/gonum/">gonum (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/interface/">interface (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/ngrok/">ngrok (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/redis/">redis (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式 (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">分布式锁 (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程 (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/">设计原则 (6)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式 (7)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>Tags</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://kunpengdai.github.io/tags/DIP/">DIP</a>
+    
+    <a href="https://kunpengdai.github.io/tags/IO/">IO</a>
+    
+    <a href="https://kunpengdai.github.io/tags/LSP/">LSP</a>
+    
+    <a href="https://kunpengdai.github.io/tags/OPP/">OPP</a>
+    
+    <a href="https://kunpengdai.github.io/tags/bitmap/">bitmap</a>
+    
+    <a href="https://kunpengdai.github.io/tags/chubby/">chubby</a>
+    
+    <a href="https://kunpengdai.github.io/tags/develop/">develop</a>
+    
+    <a href="https://kunpengdai.github.io/tags/go/">go</a>
+    
+    <a href="https://kunpengdai.github.io/tags/index/">index</a>
+    
+    <a href="https://kunpengdai.github.io/tags/interface/">interface</a>
+    
+    <a href="https://kunpengdai.github.io/tags/redis/">redis</a>
+    
+    <a href="https://kunpengdai.github.io/tags/tcp/">tcp</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99/">依赖倒置原则</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">分布式锁</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/">单一职责原则</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E5%90%88%E6%88%90%E5%A4%8D%E7%94%A8%E5%8E%9F%E5%88%99/">合成复用原则</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E5%A5%97%E6%8E%A5%E5%AD%97/">套接字</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/">开闭原则</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E6%8E%A5%E5%8F%A3%E9%9A%94%E7%A6%BB%E5%8E%9F%E5%88%99/">接口隔离原则</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E8%BF%AA%E7%B1%B3%E7%89%B9%E6%B3%95%E5%88%99/">迪米特法则</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">Links</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="http://yuedu.baidu.com/ebook/14a722970740be1e640e9a3e" title="Android Gradle权威指南">Android Gradle权威指南</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">Meta</h3>
+        <ul class="widget-list">
+            <li><a href="https://kunpengdai.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

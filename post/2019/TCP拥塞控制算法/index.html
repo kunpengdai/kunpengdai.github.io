@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>TCP拥塞控制算法 | 有鸟止南方之阜</title>
+    <meta property="og:title" content="TCP拥塞控制算法 - 有鸟止南方之阜">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2019-12-25T07:51:02&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2019-12-25T07:51:02&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="TCP拥塞控制算法">
+        
+    <meta name="author" content="kunpeng">
+    <meta property="og:url" content="https://kunpengdai.github.io/post/2019/TCP%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E7%AE%97%E6%B3%95/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://kunpengdai.github.io">
+                        有鸟止南方之阜
+                    </a>
+                
+                <p class="description">专注于 Go语言、后端、分布式</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://kunpengdai.github.io">Home</a>
+                    
+                    <a  href="https://kunpengdai.github.io/post/" title="博客">博客</a>
+                    
+                    <a  href="https://kunpengdai.github.io/tags/" title="标签">标签</a>
+                    
+                    <a  href="https://kunpengdai.github.io/categories/" title="分类">分类</a>
+                    
+                    <a  href="https://kunpengdai.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">Table of Contents</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#基础知识">基础知识</a>
+      <ul>
+        <li><a href="#运作方式">运作方式</a></li>
+        <li><a href="#拥塞窗口">拥塞窗口</a></li>
+        <li><a href="#和式增加积式减少">和式增加，积式减少</a></li>
+      </ul>
+    </li>
+    <li><a href="#tahoe-算法">Tahoe 算法</a></li>
+    <li><a href="#reno-算法">Reno 算法</a></li>
+    <li><a href="#cubic-算法">cubic 算法</a></li>
+    <li><a href="#bbr-算法">BBR 算法</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+
+        if ($("#TableOfContents").children().length < 1) {
+            $(".post-toc").remove();
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">TCP拥塞控制算法</h1>
+        </header>
+        
+  <time datetime="2019-12-24T23:51:02Z" class="post-meta meta-date dt-published">
+    2019-12-25
+  </time>
+
+
+
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">&nbsp;|
+                <span id="busuanzi_value_page_pv"></span> <span>reads</span>
+            </span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h2 id="基础知识">基础知识</h2>
+<h3 id="运作方式">运作方式</h3>
+<p>TCP 使用多用拥塞控制策略来避免雪崩式拥塞。TCP会为每条连接维护一个“拥塞窗口”来限制可能在端对端间传输的未确认分组总数量。这类似于TCP流量控制机制中使用的滑动窗口。TCP在一个连接初始化或超时后使用一种“慢启动”机制来增加拥塞窗口的大小。其起始值一般为最大分段大小MSS的两倍，虽然名为“慢启动”，起始值也比较低，但其增长非常快：当每个分段得到确认之后，拥塞窗口就会增加一倍，使得每次往返时间（round-trip time，RTT）内拥塞窗口能高效地双倍地增长。</p>
+<p>当拥塞窗口超过慢启动阈值（ssthresh）时，算法就会进入“拥塞避免”阶段。在拥塞避免阶段，只要未收到重复确认，拥塞窗口则在每次往返时间内线性增加一个MSS大小。</p>
+<h3 id="拥塞窗口">拥塞窗口</h3>
+<p>在TCP中，拥塞窗口（congestion window）是任何时刻内确定能被发送出去的字节数的控制因素之一，是阻止发送方至接收方之间的链路变得拥塞的手段。他是由发送方维护，通过估计链路的拥塞程度计算出来的，与由接收方维护的接收窗口大小并不冲突。</p>
+<p>当一条连接创建后，每个主机独立维护一个拥塞窗口并设置值为连接所能承受的MSS的最小倍数，之后的变化依靠线增积减机制来控制，这意味如果所有分段到达接收方和确认包准时地回到发送方，拥塞窗口会增加一定数量。该窗口会保持指数增大，直到发生超时或者超过一个称为“慢启动阈值（ssthresh）”的限值。如果发送方到达这个阈值时，每收到一个新确认包，拥塞窗口只按照线性速度增加自身值的倒数。</p>
+<p>当发生超时的时候，慢启动阈值降为超时前拥塞窗口的一半大小、拥塞窗口会降为1个MSS（Tahoe算法，其他算法略有不同），并且重新回到慢启动阶段。</p>
+<p>在流量控制中，接收方通过TCP的“窗口”值（Window Size）来告知发送方，由发送方通过对拥塞窗口和接收窗口的大小比较，来确定任何时刻内需要传输的数据量。</p>
+<h3 id="和式增加积式减少">和式增加，积式减少</h3>
+<p>和式增加，积式减少（additive-increase/multiplicative-decrease，AIMD，这里简称“线增积减”）是一种反馈控制算法，其包含了对拥塞窗口线性增加，和当发生拥塞时对窗口积式减少。多个使用AIMD控制的TCP流最终会收敛到对线路的等量竞争使用。</p>
+<h2 id="tahoe-算法">Tahoe 算法</h2>
+<p>Tahoe 算法主要有三个机制来控制数据流和拥塞窗口</p>
+<ul>
+<li>慢启动 slow start（SS）</li>
+<li>拥塞避免 congestion avoidance（CA)</li>
+<li>快速重传 fast retransimit（FS）</li>
+</ul>
+<p>慢启动阶段：初始设置拥塞窗口值为1，2，4或10个 MSS。拥塞窗口在每接收到一个确认包时增加，每个RTT内成倍增加，。发送速率随着慢启动的增加而进行，直到遇到出现丢失、达到慢启动阈值、或者接收方的接收窗口进行限制。如果发生丢失，则TCP推断网络出现了拥塞，会试图采取措施来降低网络负载。</p>
+<p>在处理报文丢失的事件上，Tahoe 算法会进入“快速重传”阶段，慢启动阈值设为之前拥塞窗口值的一半，拥塞窗口值降为初始值，重新进入慢启动阶段。当拥塞窗口值达到慢启动阈值时，每RTT内拥塞窗口增加值则为“MSS除以CWND”的值，所以拥塞窗口按线性速度增加。
+
+        <img class="mx-auto" alt="" src="http://www.taohui.pub/wp-content/uploads/2019/07/Reno%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E7%A4%BA%E6%84%8F.jpg" />   
+    </p>
+<h2 id="reno-算法">Reno 算法</h2>
+<p>Tahoe 算法在遇到报文丢失之后的反应过于保守，直接进入慢启动阶段。Reno 算法实现了一个名为“快速恢复”的机制，慢启动阈值设为之前拥塞窗口值的一半，和作为新的拥塞窗口值，并跳过慢启动阶段，直接进入拥塞控制阶段。</p>
+<p>
+        <img class="mx-auto" alt="" src="https://pic3.zhimg.com/v2-de79bf2c38bddb0c1caf5768577648e2_r.jpg" />   
+    
+图1. Tahoe VS Reno</p>
+<h2 id="cubic-算法">cubic 算法</h2>
+<p>在现今网络带宽朝着速度更快，距离更长的趋势发展。传统网络拥塞算法中性能不够优越，BDP(bandwidth and delay product，代表带宽被完全利用时网络能容纳的数据总量包)不高。主要是因为在进入拥塞避免阶段之后，拥塞窗口每经过一个RTT才加1，拥塞窗口增长速度太慢，当遇到高带宽环境时，要经过很多 RTT ，拥塞窗口才能接近于一个BDP。如果数据流很短，那么拥塞窗口没有达到BDP之前，数据流就已经结束了。</p>
+<p>CUBIC的窗口增长是一个三次函数，启动更快，经过一段时间稳定的数据传输之后，也可以更快的找到新的拥塞窗口值。</p>
+<p>在遇到数据丢失的情况时，CUBIC 会通过乘以因子 β （0，1）来降低拥塞窗口。
+
+        <img class="mx-auto" alt="" src="https://allen-kevin.github.io/pictures/paper%20read/20171223095005.png" />   
+    </p>
+<h2 id="bbr-算法">BBR 算法</h2>
+<p>上面的算法中，有一个假设就是“丢包的发生意味着网络的拥塞”。而在无线环境中，电磁波受到干扰的情况会大大的增加，丢包并不意味着网络负载已经达到了最大。</p>
+<p>BBR算法，致力于解决两个问题：</p>
+<ol>
+<li>在有一定丢包率的网络链路上充分利用带宽</li>
+<li>降低网络链路上的buffer占用率，从而降低延迟。</li>
+</ol>
+<p>而且，丢包的发生不只有拥塞的丢包，还有错误的丢包。而基于丢包的TCP拥塞控制算法不能区分<code>拥塞丢包</code> 和 <code>错误丢包</code>。</p>
+<p>而错误丢包率则在不同网络下大有不同，在数据中心延迟一般为10-100微妙，带宽10-40微妙，带宽为10-40 Gbps，乘起来得到的发送窗口（BDP）为12.5KB 到 500KB。而在广域网中，带宽可能是100Mbps，延迟为100毫秒，乘起来的发送窗口为10MB。丢包错误率一般跟发送窗口的平方成反比，这样，广域网的发送窗口比数据中心高一到两个数量级，这样其错误丢包率要低2-4个数量级才能正确工作。因此标准TCP在有一定错误丢标率的<code>长肥管道</code>上只会收敛到一个很小的发送窗口。</p>
+<p>其次网络中会有一些 buffer 造成缓冲区膨胀的问题。</p>
+<p>BBR 算法通过以下两点解决问题：</p>
+<ol>
+<li>既然区分不了拥塞丢包和错误丢包，那么索性就不再考虑丢包。</li>
+<li>既然灌满数据数据管道的方式容易造成缓冲区膨胀，那么 BBR 就直接分别估计带宽和延时，而不是直接估计水管的容积。</li>
+</ol>
+<p>但是也有一种观点认为，BBR 算法在有一定丢包率的情况下，抢占了更多的公网带宽，有一种不道德的感觉。但我认为，当所有人都使用更先进的拥塞控制算法时，网络的资源利用率一定会大大提升。
+关于 BBR 算法的详解，可以看我下一篇博客。</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>Author: </strong><a rel="author" href="https://kunpengdai.github.io">kunpeng</a></li>
+        <li style="word-break:break-all"><strong>Link: </strong><a href="https://kunpengdai.github.io/post/2019/TCP%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E7%AE%97%E6%B3%95/">https://kunpengdai.github.io/post/2019/TCP%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E7%AE%97%E6%B3%95/</a></li>
+        <li><strong>License: </strong>This work is under a <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>. Kindly fulfill the requirements of the aforementioned License when adapting or creating a derivative of this work.</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+
+        <div class="post-meta meta-tags">
+            
+            No tags
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "kunpeng" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2023 <a href="https://kunpengdai.github.io">有鸟止南方之阜 By kunpeng</a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-08P15BM403"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-08P15BM403', { 'anonymize_ip': false });
+}
+</script>
+
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://kunpengdai.github.io/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://kunpengdai.github.io">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">Latest articles</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2023/%E9%A3%9F%E6%9D%90%E5%8D%95%E8%AF%8D/" title="食材单词" target="_blank">食材单词</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2020/%E6%9D%A8%E6%B5%A6%E5%9B%BE%E4%B9%A6%E9%A6%86%E6%97%A5%E6%B5%81%E9%87%8F%E7%88%AC%E8%99%AB/" title="杨浦图书馆日流量爬虫" target="_blank">杨浦图书馆日流量爬虫</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/TCP%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E7%AE%97%E6%B3%95/" title="TCP拥塞控制算法" target="_blank">TCP拥塞控制算法</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/redis-bitmap/" title="Redis Bitmap" target="_blank">Redis Bitmap</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="Redis 数据结构" target="_blank">Redis 数据结构</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" title="分布式锁" target="_blank">分布式锁</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/redis%E6%8C%81%E4%B9%85%E5%8C%96%E4%B8%8E%E5%90%8C%E6%AD%A5/" title="Redis持久化与同步" target="_blank">Redis持久化与同步</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" title="网络编程" target="_blank">网络编程</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/Go%E4%B8%B4%E6%97%B6%E5%AF%B9%E8%B1%A1%E6%B1%A0pool%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/" title="Go临时对象池pool原理解析" target="_blank">Go临时对象池pool原理解析</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/go-interface-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/" title="Go Interface 原理解析" target="_blank">Go Interface 原理解析</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>Categories</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://kunpengdai.github.io/categories/develop/">develop (2)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/go/">go (2)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/gonum/">gonum (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/interface/">interface (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/ngrok/">ngrok (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/redis/">redis (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式 (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">分布式锁 (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程 (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/">设计原则 (6)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式 (7)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>Tags</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://kunpengdai.github.io/tags/DIP/">DIP</a>
+    
+    <a href="https://kunpengdai.github.io/tags/IO/">IO</a>
+    
+    <a href="https://kunpengdai.github.io/tags/LSP/">LSP</a>
+    
+    <a href="https://kunpengdai.github.io/tags/OPP/">OPP</a>
+    
+    <a href="https://kunpengdai.github.io/tags/bitmap/">bitmap</a>
+    
+    <a href="https://kunpengdai.github.io/tags/chubby/">chubby</a>
+    
+    <a href="https://kunpengdai.github.io/tags/develop/">develop</a>
+    
+    <a href="https://kunpengdai.github.io/tags/go/">go</a>
+    
+    <a href="https://kunpengdai.github.io/tags/index/">index</a>
+    
+    <a href="https://kunpengdai.github.io/tags/interface/">interface</a>
+    
+    <a href="https://kunpengdai.github.io/tags/redis/">redis</a>
+    
+    <a href="https://kunpengdai.github.io/tags/tcp/">tcp</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99/">依赖倒置原则</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">分布式锁</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/">单一职责原则</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E5%90%88%E6%88%90%E5%A4%8D%E7%94%A8%E5%8E%9F%E5%88%99/">合成复用原则</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E5%A5%97%E6%8E%A5%E5%AD%97/">套接字</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/">开闭原则</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E6%8E%A5%E5%8F%A3%E9%9A%94%E7%A6%BB%E5%8E%9F%E5%88%99/">接口隔离原则</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E8%BF%AA%E7%B1%B3%E7%89%B9%E6%B3%95%E5%88%99/">迪米特法则</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">Links</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="http://yuedu.baidu.com/ebook/14a722970740be1e640e9a3e" title="Android Gradle权威指南">Android Gradle权威指南</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">Meta</h3>
+        <ul class="widget-list">
+            <li><a href="https://kunpengdai.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

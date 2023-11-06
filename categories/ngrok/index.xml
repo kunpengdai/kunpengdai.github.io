@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ngrok on 有鸟止南方之阜</title>
+    <link>https://kunpengdai.github.io/categories/ngrok/</link>
+    <description>Recent content in ngrok on 有鸟止南方之阜</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 30 Jun 2017 15:37:14 +0800</lastBuildDate>
+    <atom:link href="https://kunpengdai.github.io/categories/ngrok/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>部署ngrok</title>
+      <link>https://kunpengdai.github.io/post/2019/%E9%83%A8%E7%BD%B2ngrok/</link>
+      <pubDate>Fri, 30 Jun 2017 15:37:14 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/%E9%83%A8%E7%BD%B2ngrok/</guid>
+      <description>ngrok ngrok可以让本地的web服务或tcp服务和外部建立一个安全的通道，使得外网可以访问本地的计算机服务。不仅可以用来暴露内网的http给外网使用，还可以从外网来ssh到本机开发环境。ngrok可以通过官方的服务来连接，也可以自己来。下面介绍下私有的ngrok服务的搭建工作。 准备</description>
+    </item>
+  </channel>
+</rss>

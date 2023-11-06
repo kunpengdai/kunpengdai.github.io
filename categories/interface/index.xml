@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>interface on 有鸟止南方之阜</title>
+    <link>https://kunpengdai.github.io/categories/interface/</link>
+    <description>Recent content in interface on 有鸟止南方之阜</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 13 Mar 2019 21:46:30 +0800</lastBuildDate>
+    <atom:link href="https://kunpengdai.github.io/categories/interface/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Go Interface 原理解析</title>
+      <link>https://kunpengdai.github.io/post/2019/go-interface-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/</link>
+      <pubDate>Wed, 13 Mar 2019 21:46:30 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/go-interface-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/</guid>
+      <description>概述 在Go中的，interface是一个非常重要的概念，一般情况下会有两种用法，一种类似于Java语言的接口的概念，作为Go语言中的一组方法的定义；一种类似于c 中的void *的概念，是Go中的抽象类型。 方法 比如经常使用的Context类型，只定义了其方法的集合，具体的类型可以有不</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>单一职责原则 on 有鸟止南方之阜</title>
+    <link>https://kunpengdai.github.io/tags/%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/</link>
+    <description>Recent content in 单一职责原则 on 有鸟止南方之阜</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 28 Jun 2018 08:05:42 +0800</lastBuildDate>
+    <atom:link href="https://kunpengdai.github.io/tags/%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>单一职责原则</title>
+      <link>https://kunpengdai.github.io/post/2019/%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3/</link>
+      <pubDate>Thu, 28 Jun 2018 08:05:42 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3/</guid>
+      <description>定义 单一职责原则（Single Responsibility Principle，SRP）又称单一功能原则：规定一个类应该且仅有一个引起它变化的原因，否则类应该被拆分。 该原则提出对象不应该承担太多职责，如果一个对象承担了太多的职责，至少存在以下两个缺点： 一个职责的变化可能会削弱或者抑制这个类实现其他职责的能力</description>
+    </item>
+  </channel>
+</rss>

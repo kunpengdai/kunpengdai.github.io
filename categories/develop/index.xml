@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>develop on 有鸟止南方之阜</title>
+    <link>https://kunpengdai.github.io/categories/develop/</link>
+    <description>Recent content in develop on 有鸟止南方之阜</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 13 Mar 2019 21:46:30 +0800</lastBuildDate>
+    <atom:link href="https://kunpengdai.github.io/categories/develop/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Go Interface 原理解析</title>
+      <link>https://kunpengdai.github.io/post/2019/go-interface-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/</link>
+      <pubDate>Wed, 13 Mar 2019 21:46:30 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/go-interface-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/</guid>
+      <description>概述 在Go中的，interface是一个非常重要的概念，一般情况下会有两种用法，一种类似于Java语言的接口的概念，作为Go语言中的一组方法的定义；一种类似于c 中的void *的概念，是Go中的抽象类型。 方法 比如经常使用的Context类型，只定义了其方法的集合，具体的类型可以有不</description>
+    </item>
+    <item>
+      <title>部署ngrok</title>
+      <link>https://kunpengdai.github.io/post/2019/%E9%83%A8%E7%BD%B2ngrok/</link>
+      <pubDate>Fri, 30 Jun 2017 15:37:14 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/%E9%83%A8%E7%BD%B2ngrok/</guid>
+      <description>ngrok ngrok可以让本地的web服务或tcp服务和外部建立一个安全的通道，使得外网可以访问本地的计算机服务。不仅可以用来暴露内网的http给外网使用，还可以从外网来ssh到本机开发环境。ngrok可以通过官方的服务来连接，也可以自己来。下面介绍下私有的ngrok服务的搭建工作。 准备</description>
+    </item>
+  </channel>
+</rss>

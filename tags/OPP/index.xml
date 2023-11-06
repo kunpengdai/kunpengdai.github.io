@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>OPP on 有鸟止南方之阜</title>
+    <link>https://kunpengdai.github.io/tags/OPP/</link>
+    <description>Recent content in OPP on 有鸟止南方之阜</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Tue, 26 Jun 2018 23:17:56 +0800</lastBuildDate>
+    <atom:link href="https://kunpengdai.github.io/tags/OPP/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>开放闭合原则</title>
+      <link>https://kunpengdai.github.io/post/2019/open-close/</link>
+      <pubDate>Tue, 26 Jun 2018 23:17:56 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/open-close/</guid>
+      <description>开闭原则 定义 OCP（Open Closed Principle）：软件实体应当对扩展开放，对修改关闭（Software entities should be open for extension，but closed for modification）。 这里的软件实体包括以下几个部分： 项目中划分出的模块 类与接口 方法 开闭原则的含义是：当应用的需求改变时，在不修改</description>
+    </item>
+  </channel>
+</rss>

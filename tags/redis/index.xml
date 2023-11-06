@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>redis on 有鸟止南方之阜</title>
+    <link>https://kunpengdai.github.io/tags/redis/</link>
+    <description>Recent content in redis on 有鸟止南方之阜</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 24 Aug 2019 22:12:12 +0800</lastBuildDate>
+    <atom:link href="https://kunpengdai.github.io/tags/redis/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Redis Bitmap</title>
+      <link>https://kunpengdai.github.io/post/2019/redis-bitmap/</link>
+      <pubDate>Sat, 24 Aug 2019 22:12:12 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/redis-bitmap/</guid>
+      <description>redis bitmap简介 redis中的bitmap是一串连续的2进制数字，每一位所在的位置为偏移，在bitmap上可以执行AND，OR，XOR，NOT等位操作。 bitmap中保存每个位置的数据仅使用了一个bit，而对应的数据的存储根据大小在bitmap中相对应offset。 一个简单的例</description>
+    </item>
+    <item>
+      <title>分布式锁</title>
+      <link>https://kunpengdai.github.io/post/2019/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/</link>
+      <pubDate>Fri, 05 Jul 2019 08:05:08 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/</guid>
+      <description>背景 在分布式环境下，需要控制多个节点对同一个资源的并发访问，此时本地的加锁已经不能满足需要。为了实现在分布式环境下的锁。 使用场景 效率:使用分布式锁可以避免不同节点重复相同的工作，这些工作会浪费资源。比如用户付了钱之后有可能不同节点会发出多封短信。 正确性:加分布式锁同样可以避免破坏</description>
+    </item>
+  </channel>
+</rss>

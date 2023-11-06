@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>依赖倒置原则 on 有鸟止南方之阜</title>
+    <link>https://kunpengdai.github.io/tags/%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99/</link>
+    <description>Recent content in 依赖倒置原则 on 有鸟止南方之阜</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 27 Jun 2018 08:42:55 +0800</lastBuildDate>
+    <atom:link href="https://kunpengdai.github.io/tags/%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>依赖倒置原则</title>
+      <link>https://kunpengdai.github.io/post/2019/%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99/</link>
+      <pubDate>Wed, 27 Jun 2018 08:42:55 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99/</guid>
+      <description>定义 依赖倒置原则（Dependence Inversion Principle，DIP）：高层模块不应该依赖底层模块，两者都应该依赖其抽象；抽象不应该依赖细节，细节应该依赖抽象（High level modules shouldnot depend upon low level modules.Both should depend upon abstractions.Abstractions should not depend upon details. Details should depend upon abstractions）。其核心思想是面向接口编程，不要面向实现编程.</description>
+    </item>
+  </channel>
+</rss>

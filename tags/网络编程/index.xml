@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>网络编程 on 有鸟止南方之阜</title>
+    <link>https://kunpengdai.github.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/</link>
+    <description>Recent content in 网络编程 on 有鸟止南方之阜</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 03 May 2019 15:51:09 +0800</lastBuildDate>
+    <atom:link href="https://kunpengdai.github.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>网络编程</title>
+      <link>https://kunpengdai.github.io/post/2019/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/</link>
+      <pubDate>Fri, 03 May 2019 15:51:09 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/</guid>
+      <description>客户端-服务器编程模型 每个网络应用都是基于客户端-服务器模型的。基于这个模型，一个应用是由一个服务器进程和一个或多个客户端进程组成。服务器管理者某种资源，并利用这种资源为其他客户端提供服务。 常见的类型有：web服务器，FTP服务器，电子邮件服务器等。 套接字编程 套接字接口流程图 套接</description>
+    </item>
+  </channel>
+</rss>

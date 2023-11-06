@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>index on 有鸟止南方之阜</title>
+    <link>https://kunpengdai.github.io/tags/index/</link>
+    <description>Recent content in index on 有鸟止南方之阜</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Tue, 26 Jun 2018 08:25:28 +0800</lastBuildDate>
+    <atom:link href="https://kunpengdai.github.io/tags/index/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>设计模式</title>
+      <link>https://kunpengdai.github.io/post/2019/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Tue, 26 Jun 2018 08:25:28 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description>概述 设计模式是前辈们对于代码开发经验的总结，是解决特定问题的一种固定套路。本质上还是对面向对象设计原则的实际运用，是对类的封装性、继承性和多态性，以及类的关联关系和组合关系的充分理解。设计模式最终要做到的就是将变化的部分和不变的部分隔离开来。 设计模式有两个核心理念： Program to an “int</description>
+    </item>
+  </channel>
+</rss>

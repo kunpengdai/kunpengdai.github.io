@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>设计模式 on 有鸟止南方之阜</title>
+    <link>https://kunpengdai.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+    <description>Recent content in 设计模式 on 有鸟止南方之阜</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 28 Jun 2018 08:41:18 +0800</lastBuildDate>
+    <atom:link href="https://kunpengdai.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>合成复用原则</title>
+      <link>https://kunpengdai.github.io/post/2019/%E5%90%88%E6%88%90%E5%A4%8D%E7%94%A8%E5%8E%9F%E5%88%99/</link>
+      <pubDate>Thu, 28 Jun 2018 08:41:18 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/%E5%90%88%E6%88%90%E5%A4%8D%E7%94%A8%E5%8E%9F%E5%88%99/</guid>
+      <description>定义 合成复用原则（Composite Reuse Principle，CRP）又叫组合/聚合复用原则（Composition/Aggregate Reuse Principle，CARP）：它要求在软件复用时，要尽量先使用组合或者聚合等关联关系来实现，其次才考虑使用继承关系来实现。 如果要使用继承关心，必</description>
+    </item>
+    <item>
+      <title>迪米特法则</title>
+      <link>https://kunpengdai.github.io/post/2019/%E8%BF%AA%E7%B1%B3%E7%89%B9%E6%B3%95%E5%88%99/</link>
+      <pubDate>Thu, 28 Jun 2018 08:27:57 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/%E8%BF%AA%E7%B1%B3%E7%89%B9%E6%B3%95%E5%88%99/</guid>
+      <description>定义 迪米特法则（Law of Demeter）：又称最少知识原则（Least Knowledge Principle，LKP），只与你的直接朋友交谈，不跟“陌生人”说话（Talk only to your immediate friends and not to strangers）。其含义是：如果两个软件实体无须直接通信，那么就不应当发生直接的相互调用，可以通过第三方转发</description>
+    </item>
+    <item>
+      <title>接口隔离原则</title>
+      <link>https://kunpengdai.github.io/post/2019/%E6%8E%A5%E5%8F%A3%E9%9A%94%E7%A6%BB%E5%8E%9F%E5%88%99/</link>
+      <pubDate>Thu, 28 Jun 2018 08:16:33 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/%E6%8E%A5%E5%8F%A3%E9%9A%94%E7%A6%BB%E5%8E%9F%E5%88%99/</guid>
+      <description>定义 接口隔离原则（Interface Segregation Principle，ISP）要求程序员尽量将臃肿庞大的接口拆分成更小和更具体的接口，让接口中只包含客户感兴趣的方法。定义：客户端不应该被迫依赖于它不适用的方法（Clients should not be forced to depend on methods they do not use）。该原则还有另外一个定义：一个类对另一</description>
+    </item>
+    <item>
+      <title>单一职责原则</title>
+      <link>https://kunpengdai.github.io/post/2019/%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3/</link>
+      <pubDate>Thu, 28 Jun 2018 08:05:42 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3/</guid>
+      <description>定义 单一职责原则（Single Responsibility Principle，SRP）又称单一功能原则：规定一个类应该且仅有一个引起它变化的原因，否则类应该被拆分。 该原则提出对象不应该承担太多职责，如果一个对象承担了太多的职责，至少存在以下两个缺点： 一个职责的变化可能会削弱或者抑制这个类实现其他职责的能力</description>
+    </item>
+    <item>
+      <title>依赖倒置原则</title>
+      <link>https://kunpengdai.github.io/post/2019/%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99/</link>
+      <pubDate>Wed, 27 Jun 2018 08:42:55 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99/</guid>
+      <description>定义 依赖倒置原则（Dependence Inversion Principle，DIP）：高层模块不应该依赖底层模块，两者都应该依赖其抽象；抽象不应该依赖细节，细节应该依赖抽象（High level modules shouldnot depend upon low level modules.Both should depend upon abstractions.Abstractions should not depend upon details. Details should depend upon abstractions）。其核心思想是面向接口编程，不要面向实现编程.</description>
+    </item>
+    <item>
+      <title>开放闭合原则</title>
+      <link>https://kunpengdai.github.io/post/2019/open-close/</link>
+      <pubDate>Tue, 26 Jun 2018 23:17:56 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/open-close/</guid>
+      <description>开闭原则 定义 OCP（Open Closed Principle）：软件实体应当对扩展开放，对修改关闭（Software entities should be open for extension，but closed for modification）。 这里的软件实体包括以下几个部分： 项目中划分出的模块 类与接口 方法 开闭原则的含义是：当应用的需求改变时，在不修改</description>
+    </item>
+    <item>
+      <title>设计模式</title>
+      <link>https://kunpengdai.github.io/post/2019/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Tue, 26 Jun 2018 08:25:28 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/post/2019/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description>概述 设计模式是前辈们对于代码开发经验的总结，是解决特定问题的一种固定套路。本质上还是对面向对象设计原则的实际运用，是对类的封装性、继承性和多态性，以及类的关联关系和组合关系的充分理解。设计模式最终要做到的就是将变化的部分和不变的部分隔离开来。 设计模式有两个核心理念： Program to an “int</description>
+    </item>
+  </channel>
+</rss>
