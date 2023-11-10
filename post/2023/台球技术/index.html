@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>台球技术 | 有鸟止南方之阜</title>
+    <meta property="og:title" content="台球技术 - 有鸟止南方之阜">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2023-11-08T12:21:36&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2023-11-08T12:21:36&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="台球技术">
+        
+    <meta name="author" content="kunpeng">
+    <meta property="og:url" content="https://kunpengdai.github.io/post/2023/%E5%8F%B0%E7%90%83%E6%8A%80%E6%9C%AF/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+        <link rel="stylesheet" href='/css/douban.css'>
+    
+        <link rel="stylesheet" href='/css/other.css'>
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://kunpengdai.github.io">
+                        有鸟止南方之阜
+                    </a>
+                
+                <p class="description">专注于 Go语言、后端、分布式</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://kunpengdai.github.io">Home</a>
+                    
+                    <a  href="https://kunpengdai.github.io/post/" title="博客">博客</a>
+                    
+                    <a  href="https://kunpengdai.github.io/tags/" title="标签">标签</a>
+                    
+                    <a  href="https://kunpengdai.github.io/categories/" title="分类">分类</a>
+                    
+                    <a  href="https://kunpengdai.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 200px;
+        margin-left: -210px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">Table of Contents</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents"></nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if (leftPos < 220) {
+                postToc.css({ "width": leftPos - 10, "margin-left": (0 - leftPos) })
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+
+        if ($("#TableOfContents").children().length < 1) {
+            $(".post-toc").remove();
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">台球技术</h1>
+        </header>
+        
+  <time datetime="2023-11-08T04:21:36Z" class="post-meta meta-date dt-published">
+    2023-11-08
+  </time>
+
+
+
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">&nbsp;|
+                <span id="busuanzi_value_page_pv"></span> <span>reads</span>
+            </span>
+        </div>
+        
+        
+        <div class="post-content">
+            <p>近期与外国友人打台球时，常常面临专业术语不知道怎么解释的尴尬。故整理了下常见英文台球术语及其的中文翻译和解释。</p>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>中文翻译</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cue ball</td>
+<td>母球</td>
+<td>白球，使用球杆可以打击的球</td>
+</tr>
+<tr>
+<td>Free Ball/Ball in Hand</td>
+<td>自由球</td>
+<td>用于替代其他颜色的球的规则（Snooker）,或可以任意摆放白球（9 ball)</td>
+</tr>
+<tr>
+<td>Bridge</td>
+<td>手架</td>
+<td>用于稳定和延长杆的手的姿势</td>
+</tr>
+<tr>
+<td>Rest/Bridge stick</td>
+<td>架杆</td>
+<td>用于帮助击球手稳定杆的器材,Rest 更通用，Bridge stick高架杆</td>
+</tr>
+<tr>
+<td>Cue stick</td>
+<td>球杆</td>
+<td>用于击打白球的长杆，通常由木材或碳纤维制成</td>
+</tr>
+<tr>
+<td>Rack</td>
+<td>三角框</td>
+<td>排球专用的正三角形木框</td>
+</tr>
+<tr>
+<td>Chalk</td>
+<td>巧粉</td>
+<td>用于增加杆头和白球之间摩擦的物质</td>
+</tr>
+<tr>
+<td>Combination</td>
+<td>接力</td>
+<td>用一个目标球撞击另一个目标球，然后使另一个球进袋</td>
+</tr>
+<tr>
+<td>Carom</td>
+<td>开伦</td>
+<td>撞击目标球后母球再去撞另一颗球称</td>
+</tr>
+<tr>
+<td>Break Shot</td>
+<td>开球</td>
+<td>比赛开始的第一球（Ronnie to Break）</td>
+</tr>
+<tr>
+<td>Call Shot</td>
+<td>报袋</td>
+<td>在击球前宣布要打入哪个球进哪个袋的规则</td>
+</tr>
+<tr>
+<td>Bank Shot/Double(Snooker)</td>
+<td>翻袋</td>
+<td>将球撞击到球台的岸边，然后再进袋的击球方式</td>
+</tr>
+<tr>
+<td>Kiss Shot</td>
+<td>K球</td>
+<td>利用球的撞击来达成某种特殊效果（撞散球堆，将死球打活）</td>
+</tr>
+<tr>
+<td>Jump Shot</td>
+<td>跳球</td>
+<td>用于使白球跳起越过障碍球击中目标球的击球方式</td>
+</tr>
+<tr>
+<td>Draw Shot/Back spin</td>
+<td>低杆</td>
+<td>用低杆击球，使白球向后旋转</td>
+</tr>
+<tr>
+<td>Follow Shot/Top spin</td>
+<td>高杆</td>
+<td>用高杆击球，使白球向前旋转</td>
+</tr>
+<tr>
+<td>Stun Shot</td>
+<td>定杆</td>
+<td>用中杆（或稍低）击球，使白球不加旋转，可以定在原地</td>
+</tr>
+<tr>
+<td>English/Side spin</td>
+<td>弧线球</td>
+<td>在白球上施加旋转以改变其运动轨迹</td>
+</tr>
+<tr>
+<td>Fluke</td>
+<td>运气球</td>
+<td>侥幸进球的情况，通常不是因技巧而是因运气</td>
+</tr>
+<tr>
+<td>Safety</td>
+<td>安全球</td>
+<td>击球的目的不是为了将球送入袋口而是让对手在下一杆的时候没有进球的机会</td>
+</tr>
+<tr>
+<td>Snooker</td>
+<td>障碍球</td>
+<td>妨碍对方瞄到目标球的一种方法</td>
+</tr>
+<tr>
+<td>Solid Ball</td>
+<td>全色球</td>
+<td>用于区分小号球和大号球的术语（美式台球）</td>
+</tr>
+<tr>
+<td>Stripe Ball</td>
+<td>花色球</td>
+<td>用于区分小号球和大号球的术语（美式台球）</td>
+</tr>
+<tr>
+<td>Scratch</td>
+<td>自落</td>
+<td>白球进袋的情况，通常是不被允许的</td>
+</tr>
+<tr>
+<td>Pot</td>
+<td>入袋</td>
+<td>将球击入球袋</td>
+</tr>
+<tr>
+<td>Clearance、Clean table</td>
+<td>清台</td>
+<td>一杆将台面上剩下的球全部打入袋</td>
+</tr>
+<tr>
+<td>Foul</td>
+<td>犯规</td>
+<td>没有碰到球，碰到不该碰的球，母球落袋等</td>
+</tr>
+</tbody>
+</table>
+<p>这个表格可以帮助你更清晰地理解这些台球术语及其对应的中文翻译和解释。</p>
+<p>Free Ball</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>Author: </strong><a rel="author" href="https://kunpengdai.github.io">kunpeng</a></li>
+        <li style="word-break:break-all"><strong>Link: </strong><a href="https://kunpengdai.github.io/post/2023/%E5%8F%B0%E7%90%83%E6%8A%80%E6%9C%AF/">https://kunpengdai.github.io/post/2023/%E5%8F%B0%E7%90%83%E6%8A%80%E6%9C%AF/</a></li>
+        <li><strong>License: </strong>This work is under a <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>. Kindly fulfill the requirements of the aforementioned License when adapting or creating a derivative of this work.</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+
+        <div class="post-meta meta-tags">
+            
+            No tags
+            
+        </div>
+    </article>
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "kunpeng" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2023 <a href="https://kunpengdai.github.io">有鸟止南方之阜 By kunpeng</a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-08P15BM403"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-08P15BM403', { 'anonymize_ip': false });
+}
+</script>
+
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+    <script src='/js/douban.js'></script>
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='https://kunpengdai.github.io/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://kunpengdai.github.io">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">Latest articles</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2023/%E5%8F%B0%E7%90%83%E6%8A%80%E6%9C%AF/" title="台球技术" target="_blank">台球技术</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2023/%E9%A3%9F%E6%9D%90%E5%8D%95%E8%AF%8D/" title="食材单词" target="_blank">食材单词</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2020/%E6%9D%A8%E6%B5%A6%E5%9B%BE%E4%B9%A6%E9%A6%86%E6%97%A5%E6%B5%81%E9%87%8F%E7%88%AC%E8%99%AB/" title="杨浦图书馆日流量爬虫" target="_blank">杨浦图书馆日流量爬虫</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/TCP%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E7%AE%97%E6%B3%95/" title="TCP拥塞控制算法" target="_blank">TCP拥塞控制算法</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/redis-bitmap/" title="Redis Bitmap" target="_blank">Redis Bitmap</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="Redis 数据结构" target="_blank">Redis 数据结构</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" title="分布式锁" target="_blank">分布式锁</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/redis%E6%8C%81%E4%B9%85%E5%8C%96%E4%B8%8E%E5%90%8C%E6%AD%A5/" title="Redis持久化与同步" target="_blank">Redis持久化与同步</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" title="网络编程" target="_blank">网络编程</a>
+    </li>
+    
+    <li>
+        <a href="https://kunpengdai.github.io/post/2019/Go%E4%B8%B4%E6%97%B6%E5%AF%B9%E8%B1%A1%E6%B1%A0pool%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/" title="Go临时对象池pool原理解析" target="_blank">Go临时对象池pool原理解析</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>Categories</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://kunpengdai.github.io/categories/English/">English (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/develop/">develop (2)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/go/">go (2)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/gonum/">gonum (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/interface/">interface (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/ngrok/">ngrok (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/redis/">redis (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式 (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">分布式锁 (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程 (1)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/">设计原则 (6)</a></li>
+    
+    <li><a href="https://kunpengdai.github.io/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式 (7)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>Tags</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://kunpengdai.github.io/tags/DIP/">DIP</a>
+    
+    <a href="https://kunpengdai.github.io/tags/English/">English</a>
+    
+    <a href="https://kunpengdai.github.io/tags/Food/">Food</a>
+    
+    <a href="https://kunpengdai.github.io/tags/IO/">IO</a>
+    
+    <a href="https://kunpengdai.github.io/tags/LSP/">LSP</a>
+    
+    <a href="https://kunpengdai.github.io/tags/OPP/">OPP</a>
+    
+    <a href="https://kunpengdai.github.io/tags/bitmap/">bitmap</a>
+    
+    <a href="https://kunpengdai.github.io/tags/chubby/">chubby</a>
+    
+    <a href="https://kunpengdai.github.io/tags/develop/">develop</a>
+    
+    <a href="https://kunpengdai.github.io/tags/go/">go</a>
+    
+    <a href="https://kunpengdai.github.io/tags/index/">index</a>
+    
+    <a href="https://kunpengdai.github.io/tags/interface/">interface</a>
+    
+    <a href="https://kunpengdai.github.io/tags/redis/">redis</a>
+    
+    <a href="https://kunpengdai.github.io/tags/tcp/">tcp</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99/">依赖倒置原则</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">分布式锁</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99/">单一职责原则</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E5%90%88%E6%88%90%E5%A4%8D%E7%94%A8%E5%8E%9F%E5%88%99/">合成复用原则</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E5%A5%97%E6%8E%A5%E5%AD%97/">套接字</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/">开闭原则</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E6%8E%A5%E5%8F%A3%E9%9A%94%E7%A6%BB%E5%8E%9F%E5%88%99/">接口隔离原则</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    
+    <a href="https://kunpengdai.github.io/tags/%E8%BF%AA%E7%B1%B3%E7%89%B9%E6%B3%95%E5%88%99/">迪米特法则</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">Links</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="http://yuedu.baidu.com/ebook/14a722970740be1e640e9a3e" title="Android Gradle权威指南">Android Gradle权威指南</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">Meta</h3>
+        <ul class="widget-list">
+            <li><a href="https://kunpengdai.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

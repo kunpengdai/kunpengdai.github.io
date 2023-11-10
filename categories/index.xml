@@ -6,8 +6,15 @@
     <description>Recent content in Categories on 有鸟止南方之阜</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 24 Aug 2019 22:12:12 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 03 Nov 2023 23:27:08 +0800</lastBuildDate>
     <atom:link href="https://kunpengdai.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>English</title>
+      <link>https://kunpengdai.github.io/categories/English/</link>
+      <pubDate>Fri, 03 Nov 2023 23:27:08 +0800</pubDate>
+      <guid>https://kunpengdai.github.io/categories/English/</guid>
+      <description></description>
+    </item>
     <item>
       <title>go</title>
       <link>https://kunpengdai.github.io/categories/go/</link>
